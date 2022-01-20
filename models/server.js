@@ -8,6 +8,8 @@ class Server {
    constructor() {
       this.app = express();
       this.port =  process.env.PORT; 
+      this.server = require('http').createServer(this.app);
+      this.io = require('socket.io')(this.server);
 
       this.paths = {}
   
@@ -17,6 +19,9 @@ class Server {
 
       //Rutas
       this.routes();
+
+      //sockets
+      this.sockets();
    }
    
 
@@ -31,11 +36,23 @@ class Server {
 
    routes(){
       // this.app.use( this.paths.auth, require('../routes/auth'));
-      
+
+   }
+
+   sockets(){
+
+      this.io.on('connection', socket => {
+         console.log('cliente conectado', socket.id);
+
+         socket.on('disconnect', ()=>{
+            console.log('cliente desconectado', socket.id);
+         })
+      });
+
    }
 
    listen(){
-      this.app.listen( this.port, ()=>{
+      this.server.listen( this.port, ()=>{
          console.log('servidor corriendo en ', this.port );
       })
    }
