@@ -10,18 +10,22 @@ const socket = io();
 
 
 socket.on('connect', ()=>{
-   console.log('Conectado');
+   // console.log('Conectado');
    lblOffline.style.display = 'none';
    lblOnline.style.display = '';
 })
 
 socket.on("disconnect", (reason) => {
    // ...
-   console.log('desconectado del servidor');
+   // console.log('desconectado del servidor');
    lblOffline.style.display = '';
    lblOnline.style.display = 'none';
  });
 
+ socket.on( 'enviar-mensaje', ( payload )=>{
+    console.log( payload );
+ });
+   
 
  btnEnviar.addEventListener('click', ()=>{
    console.log('click');
@@ -32,6 +36,7 @@ socket.on("disconnect", (reason) => {
       fecha: new Date().getTime()
 
    }
-   socket.emit( 'enviar-mensaje', payload );
-     
+   socket.emit( 'enviar-mensaje', payload, (id) =>{
+      console.log('desde el server', id);
+   } );
  })
